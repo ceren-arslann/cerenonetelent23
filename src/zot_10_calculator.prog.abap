@@ -5,65 +5,48 @@
 *&---------------------------------------------------------------------*
 REPORT zot_10_calculator.
 
-selection-SCREEN begin of block b2 with frame title text-001.
-parameters: p_sayi1 type i,
-            p_sayi2 type i.
+SELECTION-SCREEN BEGIN OF BLOCK b2 WITH FRAME TITLE TEXT-001.
+  PARAMETERS: p_sayi1 TYPE i,
+              p_sayi2 TYPE i.
 
 
-selection-SCREEN end of block b2.
+SELECTION-SCREEN END OF BLOCK b2.
 
-  selection-SCREEN begin of block b1 with frame title text-002.
+SELECTION-SCREEN BEGIN OF BLOCK b1 WITH FRAME TITLE TEXT-002.
 
-parameters: p_toplam radiobutton group c1,
-            p_cıkar radiobutton group c1,
-            p_carpma radiobutton group c1,
-            p_bolme radiobutton group c1.
+  PARAMETERS: p_toplam RADIOBUTTON GROUP c1,
+              p_cıkar  RADIOBUTTON GROUP c1,
+              p_carpma RADIOBUTTON GROUP c1,
+              p_bolme  RADIOBUTTON GROUP c1.
 
-            selection-SCREEN end of block b1.
+SELECTION-SCREEN END OF BLOCK b1.
 
-   data: gv_sonuc type i,
-         gv_op type c LENGTH 1.
+DATA: gv_sonuc TYPE i.
 
-          start-of-selection.
-
-          if ( p_toplam ='+' or
-               p_cıkar = '-' or
-               p_carpma = '*' or
-               p_bolme = '/' and p_sayi2 <> 0
-               ).
+START-OF-SELECTION.
 
 
 
+  CASE abap_true.
+
+    WHEN p_toplam.
+      gv_sonuc = p_sayi1 + p_sayi2.
+    WHEN p_cıkar.
+      gv_sonuc = p_sayi1 - p_sayi2.
+    WHEN p_carpma.
+      gv_sonuc = p_sayi1 * p_sayi2.
+    WHEN p_bolme.
+      gv_sonuc = p_sayi1 + p_sayi2.
+
+  ENDCASE.
+
+  TRY.
+     gv_sonuc = p_sayi1 / p_sayi2.
+  CATCH cx_sy_zerodivide.
+      cl_demo_output=>write( |Sifira bölünemez.| ).
+  ENDTRY.
 
 
+  cl_demo_output=>write( gv_sonuc ).
 
-          case abap_true.
-
-            when p_toplam.
-            gv_sonuc = p_sayi1 + p_sayi2.
-            when p_cıkar.
-              gv_sonuc = p_sayi1 - p_sayi2.
-            when p_carpma.
-              gv_sonuc = p_sayi1 * p_sayi2.
-            when p_bolme.
-              gv_sonuc = p_sayi1 / p_sayi2.
-
-          endcase.
-          cl_demo_output=>write( 'gv_sonuc' ).
-          elseif gv_op = '/' and p_sayi2 = 0.
-           cl_demo_output=>write( 'sıfıra bölünmez' ).
-           else.
-            cl_demo_output=>write( 'geçersiz islem' ).
-
-
-
-
-
-
-
-           ENDIF.
-
-
-
-
-           cl_demo_output=>display(  ).
+  cl_demo_output=>display(  ).
