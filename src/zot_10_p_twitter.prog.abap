@@ -13,9 +13,9 @@ SELECTION-SCREEN END OF BLOCK b1.
 SELECTION-SCREEN BEGIN OF BLOCK b2 WITH FRAME TITLE TEXT-002.
 
   PARAMETERS: p_twat  RADIOBUTTON GROUP g1 DEFAULT 'X' USER-COMMAND g1,
-              p_twdgs  RADIOBUTTON GROUP g1,
-              p_tsil RADIOBUTTON GROUP g1,
-              p_tgstr  RADIOBUTTON GROUP g1.
+              p_twdgs RADIOBUTTON GROUP g1,
+              p_tsil  RADIOBUTTON GROUP g1,
+              p_tgstr RADIOBUTTON GROUP g1.
 
 SELECTION-SCREEN END OF BLOCK b2.
 
@@ -23,37 +23,37 @@ DATA lt_tweet_modify TYPE TABLE OF zot_10_t_tweetid.
 
 START-OF-SELECTION.
 
-IF
+  IF
 
-    p_twid = space
-    AND  p_twat = 'X'
-    OR p_twid = space
-    AND p_twdgs = 'X'
-    OR p_twid = space
-    AND p_tsil = 'X'.
+      p_twid = space
+      AND  p_twat = 'X'
+      OR p_twid = space
+      AND p_twdgs = 'X'
+      OR p_twid = space
+      AND p_tsil = 'X'.
 
 
     MESSAGE 'TWEET ID GİRİLMESİ ZORUNLU!' TYPE 'I'.
 
-ELSE.
+  ELSE.
 
-        case 'x'.
+    CASE 'X'.
 
-                when p_twat.
+      WHEN p_twat.
 
- try.
+        TRY.
 
-                append value #(   twitterid = p_twid
-                        tweet = p_twit ) to lt_tweet_modify.
-                        INSERT zot_10_t_tweetid  FROM TABLE lt_tweet_modify.
-                       CATCH cx_sy_open_sql_db.
-                        cl_demo_output=>display( 'bu id var farklı giriniz.' ).
-ENDTRY.
+            APPEND VALUE #(   twitterid = p_twid
+                    tweet = p_twit ) TO lt_tweet_modify.
+            INSERT zot_10_t_tweetid  FROM TABLE lt_tweet_modify.
+          CATCH cx_sy_open_sql_db.
+            cl_demo_output=>display( 'bu id var farklı giriniz.' ).
+        ENDTRY.
 
 
-                 when p_twdgs.
-                    update zot_10_t_tweetid set tweet = p_twit
-                 where twitterid = p_twid.
+      WHEN p_twdgs.
+        UPDATE zot_10_t_tweetid SET tweet = p_twit
+     WHERE twitterid = p_twid.
 
 
       WHEN p_tsil.
@@ -62,7 +62,7 @@ ENDTRY.
 
         COMMIT WORK AND WAIT.
 
-                WHEN p_tgstr.
+      WHEN p_tgstr.
         SELECT tweet
      FROM zot_10_t_tweetid
         INTO TABLE @DATA(abapitter).
